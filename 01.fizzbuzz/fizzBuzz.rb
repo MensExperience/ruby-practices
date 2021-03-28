@@ -1,3 +1,5 @@
+#!/usr/bin/env ruby
+
 flg = 20
 i = 1
 while flg >= i
