@@ -14,7 +14,6 @@ first_day_wday = first_day.wday
 
 # 最終日
 last_day = Date.new(year,month,-1)
-last_date = last_day.day
 
 puts ("#{month}" + "月" + " " + "#{year}").center(20)
 puts ["日", "月", "火", "水", "木", "金", "土"] .join(" ")
