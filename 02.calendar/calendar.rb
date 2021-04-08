@@ -24,18 +24,10 @@ puts ["日", "月", "火", "水", "木", "金", "土"] .join(" ")
 end
 
 (first_day..last_day).each do |n|
-  if n.day < 10
-    if n.saturday?
-      print(" " + "#{n.day} \n")        
-    else
-      print(" " + "#{n.day}" + " ")
-    end
+  if n.saturday?
+    print("#{n.day.to_s.rjust(2)}" + " \n")        
   else
-    if n.saturday?
-      print("#{n.day}" + " \n")        
-    else
-      print("#{n.day}" + " ")
-    end
+    print("#{n.day.to_s.rjust(2)}" + " ")
   end
 end
 print "\n\n" 
