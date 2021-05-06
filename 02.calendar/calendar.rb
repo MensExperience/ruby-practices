@@ -25,8 +25,7 @@ end
 
 (first_day..last_day).each do |n|
   print("#{n.day.to_s.rjust(2)}" + " ")
-  if n.saturday?
-    print ("\n") 
-  end
+  print ("\n") if n.saturday?
 end
-print "\n\n" 
+
+print "\n\n"
