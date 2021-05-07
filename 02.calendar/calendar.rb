@@ -23,6 +23,7 @@ puts ["日", "月", "火", "水", "木", "金", "土"] .join(" ")
   print("   ")
 end
 
+#表示
 (first_day..last_day).each do |n|
   print("#{n.day.to_s.rjust(2)}" + " ")
   print ("\n") if n.saturday?
