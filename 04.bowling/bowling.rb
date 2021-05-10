@@ -30,10 +30,9 @@ end
 # 10フレームの前処理 End
 
 point = 0
-
 frames.each_with_index do |frame_exec, i|
   point +=
-    if i <= 7 && frame_exec.first == 10 && frames[i + 1][0] == 10 # ダブルストライク
+    if i <= 7 && frame_exec.first == 10 && frames[i + 1].first == 10 # ダブルストライク
       20 + frames[i + 2].first
     elsif i <= 7 && frame_exec.first == 10 # シングルストライク
       10 + frames[i + 1][0..1].sum
