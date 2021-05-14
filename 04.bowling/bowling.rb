@@ -29,17 +29,15 @@ elsif frames.size == 11
 end
 # 10フレームの前処理 End
 
-point = 0
-frames.each_with_index do |frame_exec, i|
-  point +=
-    if i <= 7 && frame_exec.first == 10 && frames[i + 1].first == 10 # ダブルストライク
+point = frames.each_with_index.sum do |frame, i|
+  if i <= 7 && frame.first == 10 && frames[i + 1].first == 10 # ダブルストライク
       20 + frames[i + 2].first
-    elsif i <= 7 && frame_exec.first == 10 # シングルストライク
+    elsif i <= 8 && frame.first == 10 # シングルストライク
       10 + frames[i + 1][0..1].sum
-    elsif i != 9 && frame_exec.sum == 10 # スペア（10フレーム目を除く）
+    elsif i != 9 && frame.sum == 10 # スペア（10フレーム目を除く）
       10 + frames[i + 1].first
     else
-      frame_exec.sum
+      frame.sum
     end
 end
 
