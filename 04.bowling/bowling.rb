@@ -31,14 +31,14 @@ end
 
 point = frames.each_with_index.sum do |frame, i|
   if i <= 7 && frame.first == 10 && frames[i + 1].first == 10 # ダブルストライク
-      20 + frames[i + 2].first
-    elsif i <= 8 && frame.first == 10 # シングルストライク
-      10 + frames[i + 1][0..1].sum
-    elsif i != 9 && frame.sum == 10 # スペア（10フレーム目を除く）
-      10 + frames[i + 1].first
-    else
-      frame.sum
-    end
+    20 + frames[i + 2].first
+  elsif i <= 8 && frame.first == 10 # シングルストライク
+    10 + frames[i.next][0..1].sum
+  elsif i != 9 && frame.sum == 10 # スペア（10フレーム目を除く）
+    10 + frames[i.next].first
+  else
+    frame.sum
+  end
 end
 
 p point
