@@ -29,7 +29,7 @@ elsif frames.size == 11
 end
 # 10フレームの前処理 End
 
-point = point = frames.each_with_index.sum do |frame, i|
+point = frames.each_with_index.sum do |frame, i|
   if i <= 7 && frame.first == 10 && frames[i + 1].first == 10 # ダブルストライク
     20 + frames[i + 2].first
   elsif i <= 8 && frame.first == 10 # シングルストライク
