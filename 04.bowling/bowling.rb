@@ -21,7 +21,6 @@ frames = shots.each_slice(2).to_a
 if frames.size == 12
   frames[9].pop
   frames[9].push(frames[10].first).push(frames[11].first)
-  # 2.times do |n| frames.pop
   frames.pop(2)
 # 1スペアのみ OR ストライク・スペアなし
 elsif frames.size == 11
