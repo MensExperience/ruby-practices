@@ -21,15 +21,16 @@ frames = shots.each_slice(2).to_a
 if frames.size == 12
   frames[9].pop
   frames[9].push(frames[10].first).push(frames[11].first)
-  frames.each { frames.delete_at(10) }
+  # 2.times do |n| frames.pop
+  frames.pop(2)
 # 1スペアのみ OR ストライク・スペアなし
 elsif frames.size == 11
   frames[9].push(frames[10].first)
-  frames.each { frames.delete_at(10) }
+  frames.pop
 end
 # 10フレームの前処理 End
 
-point = frames.each_with_index.sum do |frame, i|
+point = point = frames.each_with_index.sum do |frame, i|
   if i <= 7 && frame.first == 10 && frames[i + 1].first == 10 # ダブルストライク
     20 + frames[i + 2].first
   elsif i <= 8 && frame.first == 10 # シングルストライク
