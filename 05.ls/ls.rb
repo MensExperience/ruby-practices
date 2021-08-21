@@ -4,24 +4,18 @@
 require 'optparse'
 require 'etc'
 
-DISP_COLUMN = 3 # 表示数
+DISP_COLUMN = 3
 DEFINED_FILESTYPE = { 'file': '-', 'directory': 'd', 'character special': 'c', 'block special': 'b', 'socket': 's', 'symbolic link': 'l' }.freeze
 DEFINED_PERMISSION = { '0': '---', '1': '--x', '2': '-w-', '3': '-wx', '4': 'r--', '5': 'r-x', '6': 'rw-', '7': 'rwx' }.freeze
 
 class Main
   def main
     opt = ARGV.getopts('a', 'l', 'r')
-
-    # オプションa
-    option_a = OptionA.new
+    option_a = FilesInADirectory.new
     files = opt['a'] ? option_a.retrieve_all_files : option_a.retrieve_files
-
-    # オプションr
     files = files.reverse if opt['r']
-
-    # オプションl
     if opt['l']
-      option_l = OptionL.new
+      option_l = DetailedFileInformation.new
       option_l.disp(files)
     else
       displayed_files = Displayedfiles.new
@@ -31,22 +25,21 @@ class Main
   end
 end
 
-class OptionA
+class FilesInADirectory
   def retrieve_files
     Array.new(Dir.glob('*').sort)
   end
 
-  # aオプション
   def retrieve_all_files
     Array.new(Dir.glob('*', File::FNM_DOTMATCH).sort)
   end
 end
 
 class Displayedfiles
-  # 表示分割
   def make_displayedfiles(files)
-    files = files.each_slice(DISP_COLUMN).to_a
-    files.last << nil until files.last.size >= DISP_COLUMN
+    files << nil until (files.size % DISP_COLUMN).zero?
+    disp_row = files.size / DISP_COLUMN
+    files = files.each_slice(disp_row).to_a
     files.transpose
   end
 
@@ -60,34 +53,21 @@ class Displayedfiles
   end
 end
 
-class OptionL
+class DetailedFileInformation
   def disp(files)
-    # トータルブロック数
-    blocks_total = []
-    files.each do |f|
-      blocks_total.push(File::Stat.new(f).blocks)
-    end
-    puts "total #{blocks_total.sum}"
-    # ファイル情報詳細
+    blocks_total = files.map { |n| File::Stat.new(n).blocks }.sum
+    puts "total #{blocks_total}"
     files.each do |f|
       stat =  File::Stat.new(f)
-      # ファイルタイプ
       print DEFINED_FILESTYPE.values_at(stat.ftype.to_sym).first
-      # パーミッション
       print DEFINED_PERMISSION.values_at(stat.mode.to_s(8)[-3].to_sym).first
       print DEFINED_PERMISSION.values_at(stat.mode.to_s(8)[-2].to_sym).first
       print DEFINED_PERMISSION.values_at(stat.mode.to_s(8)[-1].to_sym).first
-      # ハードリンク
       print " #{stat.nlink}".rjust(3)
-      # 所有ユーザー
       print " #{Etc.getpwuid(stat.uid).name} "
-      # 所有グループ
       print " #{Etc.getgrgid(stat.gid).name} "
-      # サイズ
       print " #{stat.size}".rjust(5)
-      # タイムスタンプ
       print "  #{stat.mtime.strftime('%-m %e %H:%M')}".rjust(5)
-      # ファイル名
       puts " #{f}".ljust(5)
     end
   end
