@@ -5,8 +5,23 @@ require 'optparse'
 require 'etc'
 
 DISP_COLUMN = 3
-DEFINED_FILESTYPE = { 'file': '-', 'directory': 'd', 'character special': 'c', 'block special': 'b', 'socket': 's', 'symbolic link': 'l' }.freeze
-DEFINED_PERMISSION = { '0': '---', '1': '--x', '2': '-w-', '3': '-wx', '4': 'r--', '5': 'r-x', '6': 'rw-', '7': 'rwx' }.freeze
+DEFINED_FILESTYPE = {
+  'file': '-',
+  'directory': 'd',
+  'character special': 'c',
+  'block special': 'b', 'socket': 's',
+  'symbolic link': 'l'
+}.freeze
+DEFINED_PERMISSION = {
+  '0': '---',
+  '1': '--x',
+  '2': '-w-',
+  '3': '-wx',
+  '4': 'r--',
+  '5': 'r-x',
+  '6': 'rw-',
+  '7': 'rwx'
+}.freeze
 
 class Main
   def main
@@ -55,7 +70,7 @@ end
 
 class DetailedFileInformation
   def disp(files)
-    blocks_total = files.map { |n| File::Stat.new(n).blocks }.sum
+    blocks_total = files.sum { |n| File::Stat.new(n).blocks }
     puts "total #{blocks_total}"
     files.each do |f|
       stat =  File::Stat.new(f)
@@ -67,7 +82,7 @@ class DetailedFileInformation
       print " #{Etc.getpwuid(stat.uid).name} "
       print " #{Etc.getgrgid(stat.gid).name} "
       print " #{stat.size}".rjust(5)
-      print "  #{stat.mtime.strftime('%-m %e %H:%M')}".rjust(5)
+      print " #{stat.mtime.strftime('%_m %e %H:%M')}".rjust(5)
       puts " #{f}".ljust(5)
     end
   end
