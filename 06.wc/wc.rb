@@ -40,7 +40,7 @@ class FileArguments
       puts " #{file}"
       total_line += file_arguments.calc_word(read_file)
       total_word += file_arguments.calc_line(read_file) unless opt['l']
-      total_bytesize += read_file.bytesize unless opt['l']
+      total_bytesize += file_arguments.calc_bytesize(read_file) unless opt['l']
     end
     disp_total(total_line, total_word, total_bytesize, opt) if read_files.size > 1
   end
@@ -76,6 +76,10 @@ class CalcFileInfo
 
   def calc_line(read_file)
     read_file.split(/\s+/).size
+  end
+
+  def calc_bytesize(read_file)
+    read_file.bytesize
   end
 end
 
