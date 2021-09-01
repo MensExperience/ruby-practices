@@ -2,8 +2,17 @@
 # frozen_string_literal: true
 
 require 'optparse'
-opt = ARGV.getopts('l')
-read_files = ARGV
+
+class Main
+  def main
+    opt = ARGV.getopts('l')
+    read_files = ARGV
+    if read_files.empty?
+      opt['l'] ? standard_input_l : standard_input
+    end
+    opt['l'] ? disp_l(read_files) : disp(read_files)
+  end
+end
 
 def disp_total(total_line, total_word, total_bytesize)
   print "  #{total_line.to_s.rjust(6)}"
@@ -24,11 +33,11 @@ def disp(read_files)
 
   read_files.each do |file|
     read_file = File.read(file)
-    print "  #{read_file.lines.count.to_s.rjust(6)}"
+    print "  #{read_file.split(/\R/).size.to_s.rjust(6)}"
     print "  #{read_file.split(/\s+/).size.to_s.rjust(6)}"
     print "  #{read_file.bytesize.to_s.rjust(6)}"
     puts " #{file}"
-    total_line += read_file.lines.count
+    total_line += read_file.split(/\R/).size
     total_word += read_file.split(/\s+/).size
     total_bytesize += read_file.bytesize
   end
@@ -40,7 +49,7 @@ def disp_l(read_files)
 
   read_files.each do |file|
     read_file = File.read(file)
-    print "  #{read_file.lines.count.to_s.rjust(6)}"
+    print "  #{read_file.split(/\R/).size.to_s.rjust(6)}"
     puts " #{file}"
     total_line += read_file.lines.count
   end
@@ -49,18 +58,14 @@ end
 
 def standard_input
   input = $stdin.read
-  print "  #{input.lines.count.to_s.rjust(6)}"
+  print "  #{input.split(/\R/).size.to_s.rjust(6)}"
   print "  #{input.split(/\s+/).size.to_s.rjust(6)}"
   puts "  #{input.bytesize.to_s.rjust(6)}"
 end
 
 def standard_input_l
   input = $stdin.read
-  puts "  #{input.lines.count.to_s.rjust(6)}"
+  puts "  #{input.split(/\R/).size.to_s.rjust(6)}"
 end
 
-if read_files.empty?
-  opt['l'] ? standard_input_l : standard_input
-end
-
-opt['l'] ? disp_l(read_files) : disp(read_files)
+Main.new.main
