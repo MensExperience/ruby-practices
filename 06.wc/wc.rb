@@ -24,10 +24,11 @@ class Main
         display_detailed_information(file_text, opt)
         puts " #{adjust_display_position(file_path)}"
       end
-      total_line += count_line(file_text)
+      line_count, word_count, bytesize_count = render_counted_info(file_text)
+      total_line += line_count
       unless opt['l']
-        total_word += count_word(file_text)
-        total_bytesize += count_bytesize(file_text)
+        total_word += word_count
+        total_bytesize += bytesize_count
       end
       display_total_count(total_line, total_word, total_bytesize, opt) if file_paths.size > 1
     end
@@ -36,11 +37,31 @@ class Main
   private
 
   def display_detailed_information(file_text, opt)
-    print " #{adjust_display_position(count_line(file_text))}"
-      unless opt['l']
-        print " #{adjust_display_position(count_word(file_text))}"
-        print " #{adjust_display_position(count_bytesize(file_text))}"
-      end
+    line_count, word_count, bytesize_count = render_counted_info(file_text)
+    print " #{adjust_display_position(line_count)}"
+    return if opt['l']
+
+    print " #{adjust_display_position(word_count)}"
+    print " #{adjust_display_position(bytesize_count)}"
+  end
+
+  def render_counted_info(file_text)
+    line_count = count_line(file_text)
+    word_count = count_word(file_text)
+    bytesize_count = count_bytesize(file_text)
+    [line_count, word_count, bytesize_count]
+  end
+
+  def count_line(file_text)
+    file_text.split(/\R/).size
+  end
+
+  def count_word(file_text)
+    file_text.split(/\s+/).size
+  end
+
+  def count_bytesize(file_text)
+    file_text.bytesize
   end
 
   def display_total_count(total_line, total_word, total_bytesize, opt)
@@ -54,18 +75,6 @@ class Main
 
   def adjust_display_position(info)
     info.to_s.rjust(7)
-  end
-
-  def count_line(file_text)
-    file_text.split(/\R/).size
-  end
-
-  def count_word(file_text)
-    file_text.split(/\s+/).size
-  end
-
-  def count_bytesize(file_text)
-    file_text.bytesize
   end
 end
 
