@@ -39,10 +39,10 @@ class Main
   def display_detailed_information(file_text, opt)
     line_count, word_count, bytesize_count = render_counted_info(file_text)
     print " #{adjust_display_position(line_count)}"
-    return if opt['l']
-
-    print " #{adjust_display_position(word_count)}"
-    print " #{adjust_display_position(bytesize_count)}"
+    unless opt['l']
+      print " #{adjust_display_position(word_count)}"
+      print " #{adjust_display_position(bytesize_count)}"
+    end
   end
 
   def render_counted_info(file_text)
