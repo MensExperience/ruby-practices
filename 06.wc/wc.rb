@@ -7,49 +7,49 @@ class Main
   def main
     opt = ARGV.getopts('l')
     file_paths = ARGV
-    display(file_paths, opt)
+    file_paths.empty? ? display_normal_input(opt) : display_filepath_input(file_paths, opt)
   end
 
-  def display(file_paths, opt)
+  private
+
+  def display_normal_input(opt)
+    file_text = $stdin.read
+    line_count, word_count, bytesize_count = count_file_info(file_text)
+    display_detailed_info(line_count, word_count, bytesize_count, opt)
+    puts
+  end
+
+  def display_filepath_input(file_paths, opt)
     total_line = 0
     total_word = 0
     total_bytesize = 0
-    if file_paths.empty?
-      file_text = $stdin.read
-      display_detailed_information(file_text, opt)
-      puts
-    else
-      file_paths.each do |file_path|
-        file_text = File.read(file_path)
-        display_detailed_information(file_text, opt)
-        puts " #{adjust_display_position(file_path)}"
-      end
-      line_count, word_count, bytesize_count = render_counted_info(file_text)
+    file_paths.each do |file_path|
+      file_text = File.read(file_path)
+      line_count, word_count, bytesize_count = count_file_info(file_text)
+      display_detailed_info(line_count, word_count, bytesize_count, opt)
       total_line += line_count
       unless opt['l']
         total_word += word_count
         total_bytesize += bytesize_count
       end
-      display_total_count(total_line, total_word, total_bytesize, opt) if file_paths.size > 1
+      puts " #{file_path}"
     end
+    display_total_count(total_line, total_word, total_bytesize, opt) if file_paths.size > 1
   end
 
-  private
-
-  def display_detailed_information(file_text, opt)
-    line_count, word_count, bytesize_count = render_counted_info(file_text)
-    print " #{adjust_display_position(line_count)}"
-    unless opt['l']
-      print " #{adjust_display_position(word_count)}"
-      print " #{adjust_display_position(bytesize_count)}"
-    end
-  end
-
-  def render_counted_info(file_text)
+  def count_file_info(file_text)
     line_count = count_line(file_text)
     word_count = count_word(file_text)
     bytesize_count = count_bytesize(file_text)
     [line_count, word_count, bytesize_count]
+  end
+
+  def display_detailed_info(line_count, word_count, bytesize_count, opt)
+    print " #{format_value(line_count)}"
+    return if opt['l']
+
+    print " #{format_value(word_count)}"
+    print " #{format_value(bytesize_count)}"
   end
 
   def count_line(file_text)
@@ -65,16 +65,16 @@ class Main
   end
 
   def display_total_count(total_line, total_word, total_bytesize, opt)
-    print " #{adjust_display_position(total_line)}"
+    print " #{format_value(total_line)}"
     unless opt['l']
-      print " #{adjust_display_position(total_word)}"
-      print " #{adjust_display_position(total_bytesize)}"
+      print " #{format_value(total_word)}"
+      print " #{format_value(total_bytesize)}"
     end
     puts ' total'
   end
 
-  def adjust_display_position(info)
-    info.to_s.rjust(7)
+  def format_value(value)
+    value.to_s.rjust(7)
   end
 end
 
