@@ -15,8 +15,7 @@ class Main
   def display_normal_input(opt)
     file_text = $stdin.read
     line_count, word_count, bytesize_count = count_file_info(file_text)
-    display_detailed_info(line_count, word_count, bytesize_count, opt)
-    puts
+    display_detailed_info(line_count, word_count, bytesize_count, opt, nil)
   end
 
   def display_filepath_input(file_paths, opt)
@@ -26,15 +25,21 @@ class Main
     file_paths.each do |file_path|
       file_text = File.read(file_path)
       line_count, word_count, bytesize_count = count_file_info(file_text)
-      display_detailed_info(line_count, word_count, bytesize_count, opt)
+      display_detailed_info(line_count, word_count, bytesize_count, opt, file_path)
       total_line += line_count
-      unless opt['l']
-        total_word += word_count
-        total_bytesize += bytesize_count
-      end
-      puts " #{file_path}"
+      total_word += word_count
+      total_bytesize += bytesize_count
     end
-    display_total_count(total_line, total_word, total_bytesize, opt) if file_paths.size > 1
+    display_detailed_info(total_line, total_word, total_bytesize, opt, 'total') if file_paths.size > 1
+  end
+
+  def display_detailed_info(line_count, word_count, bytesize_count, opt, file_path)
+    print " #{format_value(line_count)}"
+    unless opt['l']
+      print " #{format_value(word_count)}"
+      print " #{format_value(bytesize_count)}"
+    end
+    puts " #{file_path}"
   end
 
   def count_file_info(file_text)
@@ -42,14 +47,6 @@ class Main
     word_count = count_word(file_text)
     bytesize_count = count_bytesize(file_text)
     [line_count, word_count, bytesize_count]
-  end
-
-  def display_detailed_info(line_count, word_count, bytesize_count, opt)
-    print " #{format_value(line_count)}"
-    return if opt['l']
-
-    print " #{format_value(word_count)}"
-    print " #{format_value(bytesize_count)}"
   end
 
   def count_line(file_text)
@@ -62,15 +59,6 @@ class Main
 
   def count_bytesize(file_text)
     file_text.bytesize
-  end
-
-  def display_total_count(total_line, total_word, total_bytesize, opt)
-    print " #{format_value(total_line)}"
-    unless opt['l']
-      print " #{format_value(total_word)}"
-      print " #{format_value(total_bytesize)}"
-    end
-    puts ' total'
   end
 
   def format_value(value)
