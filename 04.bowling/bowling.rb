@@ -13,10 +13,8 @@ scores.each do |s|
     shots.push s.to_i
   end
 end
-
 frames = shots.each_slice(2).to_a
 
-# 10フレームの前処理 Start
 # 2ストライク OR 1ストライク1スペア
 if frames.size == 12
   frames[9].pop
@@ -27,14 +25,13 @@ elsif frames.size == 11
   frames[9].push(frames[10].first)
   frames.pop
 end
-# 10フレームの前処理 End
 
 point = frames.each_with_index.sum do |frame, i|
-  if i <= 7 && frame.first == 10 && frames[i + 1].first == 10 # ダブルストライク
+  if i <= 7 && frame.first == 10 && frames[i + 1].first == 10
     20 + frames[i + 2].first
-  elsif i <= 8 && frame.first == 10 # シングルストライク
+  elsif i <= 8 && frame.first == 10
     10 + frames[i.next][0..1].sum
-  elsif i != 9 && frame.sum == 10 # スペア（10フレーム目を除く）
+  elsif i != 9 && frame.sum == 10
     10 + frames[i.next].first
   else
     frame.sum
