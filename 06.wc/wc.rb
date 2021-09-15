@@ -34,7 +34,7 @@ class Main
   end
 
   def display_detailed_info(line_count, word_count, bytesize_count, file_path, opt)
-      print " #{format_value(line_count)}"
+    print " #{format_value(line_count)}"
     unless opt['l']
       print " #{format_value(word_count)}"
       print " #{format_value(bytesize_count)}"
