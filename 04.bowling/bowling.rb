@@ -18,7 +18,8 @@ total_score =
   if i + 1 >= 10
     frame.sum
   elsif strike
-    if frames[i.next].first == 10
+    double = (frames[i.next].first == 10)
+    if double
       20 + frames[i + 2].first
     else
       10 + frames[i.next][0..1].sum
