@@ -15,7 +15,9 @@ total_score =
  frames.each_with_index.sum do |frame, i|
   strike = (frame.first == 10)
   spare =(!strike && frame.sum == 10)
-  if i + 1 >= 10
+  last_frame = (i + 1 >= 10)
+
+  if last_frame
     frame.sum
   elsif strike
     double = (frames[i.next].first == 10)
