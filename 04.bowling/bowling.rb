@@ -1,41 +1,38 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-score = ARGV[0]
-scores = score.split(',')
+score_text = ARGV[0]
+scores = score_text.split(',')
 
-shots = []
-scores.each do |s|
-  if s == 'X'
-    shots.push(10)
-    shots.push(0)
+frame = []
+scores.each do |score|
+  if score == 'X'
+    frame.push(10, 0)
   else
-    shots.push s.to_i
+    frame.push score.to_i
   end
 end
-frames = shots.each_slice(2).to_a
 
-# 2ストライク OR 1ストライク1スペア
-if frames.size == 12
-  frames[9].pop
-  frames[9].push(frames[10].first).push(frames[11].first)
-  frames.pop(2)
-# 1スペアのみ OR ストライク・スペアなし
-elsif frames.size == 11
-  frames[9].push(frames[10].first)
-  frames.pop
+game_score = frame.each_slice(2).to_a
+if game_score.size == 12
+  game_score[9].pop
+  game_score[9].push(game_score[10].first).push(game_score[11].first)
+  game_score.pop(2)
+elsif game_score.size == 11
+  game_score[9].push(game_score[10].first)
+  game_score.pop
 end
 
-point = frames.each_with_index.sum do |frame, i|
-  if i <= 7 && frame.first == 10 && frames[i + 1].first == 10
-    20 + frames[i + 2].first
+total_point = game_score.each_with_index.sum do |frame, i|
+  if i <= 7 && frame.first == 10 && game_score[i + 1].first == 10
+    20 + game_score[i + 2].first
   elsif i <= 8 && frame.first == 10
-    10 + frames[i.next][0..1].sum
+    10 + game_score[i.next][0..1].sum
   elsif i != 9 && frame.sum == 10
-    10 + frames[i.next].first
+    10 + game_score[i.next].first
   else
     frame.sum
   end
 end
 
-p point
+p total_point
