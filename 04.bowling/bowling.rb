@@ -1,12 +1,11 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 text_scores = ARGV[0].split(',')
-frame = []
-text_scores.each do |text_score|
+frame = text_scores.flat_map do |text_score|
   if text_score == 'X'
-    frame.push(10, 0)
+    [10, 0]
   else
-    frame.push text_score.to_i
+    text_score.to_i
   end
 end
 
