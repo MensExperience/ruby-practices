@@ -2,11 +2,7 @@
 # frozen_string_literal: true
 text_scores = ARGV[0].split(',')
 frame = text_scores.flat_map do |text_score|
-  if text_score == 'X'
-    [10, 0]
-  else
-    text_score.to_i
-  end
+  text_score == 'X' ? [10, 0] : text_score.to_i
 end
 
 frames = frame.each_slice(2).to_a
