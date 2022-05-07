@@ -15,12 +15,14 @@ total_score =
  frames.each_with_index.sum do |frame, i|
   strike = (frame.first == 10)
   spare =(!strike && frame.sum == 10)
-  if i + 1 >= 10 #last_game
+  if i + 1 >= 10
     frame.sum
-  elsif strike && frames[i.next].first == 10 #double_strike
-    20 + frames[i + 2].first
-  elsif frame.first == 10 #single_strike
-    10 + frames[i.next][0..1].sum
+  elsif strike
+    if frames[i.next].first == 10
+      20 + frames[i + 2].first
+    else
+      10 + frames[i.next][0..1].sum
+    end
   elsif spare
     10 + frames[i.next].first
   else
