@@ -16,18 +16,20 @@ total_score =
   strike = (frame.first == 10)
   spare =(!strike && frame.sum == 10)
   last_frame = (i + 1 >= 10)
+  next_frame = frames[i.next]
+  after_next_frame = frames[i + 2]
 
   if last_frame
     frame.sum
   elsif strike
     double = (frames[i.next].first == 10)
     if double
-      20 + frames[i + 2].first
+      20 + after_next_frame.first
     else
-      10 + frames[i.next][0..1].sum
+      10 + next_frame.sum
     end
   elsif spare
-    10 + frames[i.next].first
+    10 + next_frame.first
   else
     frame.sum
   end
