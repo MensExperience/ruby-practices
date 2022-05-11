@@ -1,49 +1,39 @@
 require_relative 'frame'
 
 class Game
-  def initialize(text_scores)
-    format_frames(text_scores)
+  def initialize(pinfall_text)
+    @frames = format_pinfalls(pinfall_text)
   end
-#TODO Frameクラスにtext_scoresをフレームごとに投げる→Frame型の配列を作成。
-#（10フレーム以降の挙動注意）→Frameクラスインスタンスは、shotクラスのインスタンスからの応答値を合計する処理に留めて、厳密なストライクやスペア処理などはGameクラスで行う様にしていく。
-  def display_game_score
-    game_score =
-      @frames.each_with_index.sum do |frame, i|
-        strike = (frame.first == 10)
-        spare =(!strike && frame.sum == 10)
-        last_frame = (i + 1 >= 10)
-        next_frame = @frames[i.next]
-        after_next_frame = @frames[i + 2]
 
-        if last_frame
-          frame.sum
-        elsif strike
-          double = (@frames[i.next].first == 10)
-          if double
-            20 + after_next_frame.first
-          else
-            10 + next_frame.sum
-          end
-        elsif spare
-          10 + next_frame.first
-        else
-          frame.sum
-        end
-      end
-    puts game_score
+  def display_game_score
+    @frames
   end
 
   private
 
-  def format_frames(text_scores)
-    text_scores = text_scores.split(',')
-    text_frame = text_scores.flat_map do |text_score|
-      text_score == 'X' ? [10, 0] : text_score.to_i
+  def format_pinfalls(pinfall_text)
+    pinfalls = pinfall_text.split(',').map { |c| c == 'X' ? 10 : c.to_i }
+    frames = []
+    pinfalls.each_with_index do |pinfall, index|
+      frames << [] if next_frame?(frames)
+      rolls = frames.last
+      rolls << pinfall
     end
-    @frames = text_frame.each_slice(2).to_a
-    p @frames
+    frames
+  end
+
+  def last_frame?(frames)
+    frames.size == 10
+  end
+
+  def strike?(rolls)
+    rolls[0] == 10
+  end
+
+  def next_frame?(frames)
+    rolls = frames.last
+    !last_frame?(frames) && (frames.empty? || strike?(rolls) || rolls.size == 2)
   end
 end
 
-text_scores = ARGV[0]
-Game.new(text_scores).display_game_score
+p Game.new(ARGV[0]).display_game_score
