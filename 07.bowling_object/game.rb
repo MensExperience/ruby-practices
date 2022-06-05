@@ -8,14 +8,19 @@ class Game
   end
 
   def calc_game_score
-    @game_score =
-      @frames.each_with_index.sum do |frame, i|
-        frame.calc_score
-      end
-    puts @game_score
+    @frames.each_with_index.sum do |frame, i|
+      @game_score += frame.calc_score
+      @game_score += add_bonus(@frames, i)
+    end
+  puts @game_score
+  pp @frames
   end
 
   private
+
+  def format_pinfalls(pinfall_text)
+    pinfalls = pinfall_text.split(',').map { |c| c == 'X' ? 10 : c.to_i }
+  end
 
   def create_frames(pinfalls)
     rolls = create_rolls(pinfalls)
@@ -23,8 +28,8 @@ class Game
   end
 
   def create_rolls(pinfalls)
-    one_roll = []
     rolls = []
+    one_roll = []
 
     pinfalls.each do |pinfall|
       one_roll << pinfall
@@ -34,11 +39,14 @@ class Game
       end
     end
     rolls << one_roll
-    pp rolls
   end
 
-  def format_pinfalls(pinfall_text)
-    pinfalls = pinfall_text.split(',').map { |c| c == 'X' ? 10 : c.to_i }
+  def add_bonus(frames, i)
+    if i + 1 >= 10
+      0
+    else
+      10
+    end
   end
 end
 
